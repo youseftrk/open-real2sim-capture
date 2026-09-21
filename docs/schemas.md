@@ -1,6 +1,8 @@
-> **Status:** draft — do not publish until the GitHub org (`youseftrk`) is confirmed.
+> **Status:** public early draft — live under [`youseftrk`](https://github.com/youseftrk).
 
 # Schemas — open-real2sim-capture
+
+This is for the on-disk shape of a room recording (what files show up and what they mean).
 
 **Authoritative bag contract:** [`CAPTURE_BAG_v0.md`](CAPTURE_BAG_v0.md) — MCAP + `manifest.json`, RDF optical, meters, quat xyzw.
 
@@ -43,14 +45,6 @@ Schema id: `open-real2sim.capture.manifest/0.1`
   "purpose": "scene",
   "duration_s": 0.0,
   "mcap": "session.mcap",
-  "mcap_encoding": {
-    "format": "protobuf",
-    "schemas": {
-      "/or2s/rgb/image": "foxglove.CompressedImage",
-      "/or2s/rgb/camera_info": "foxglove.CameraCalibration",
-      "/or2s/pose": "foxglove.PoseInFrame"
-    }
-  },
   "streams": [
     {
       "name": "rgb",

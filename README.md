@@ -1,102 +1,65 @@
-# or2s-capture
+# open-real2sim-capture
 
-Minimal **Apache-2.0** Python package for Open Real2Sim **capture bags** (v0 stub).
+I built a recorder so your phone or robot can film a room and save it in a format we can turn into 3D.
 
-Primary on-disk format: **MCAP** + sidecar JSON (`manifest.json`, calibration, provenance).
-See [`docs/CAPTURE_BAG_v0.md`](docs/CAPTURE_BAG_v0.md) for the locked schema.
+Capture RGB, depth, IMU, and LiDAR from phones, tablets, and robots into synchronized, calibrated recordings for Open Real2Sim.
+> **Status:** public early draft — [`youseftrk/open-real2sim-capture`](https://github.com/youseftrk/open-real2sim-capture).
+> **Affiliation:** clean-room open source. Inspired by public Real2Sim product demos where noted. No claim of affiliation with, or clone of, any closed Real2Sim product.
 
-Consumers: **Reconstruct Eng** (ingest), Sim Runtime, Env Commons.
+## Why this exists
+
+Robot learning needs real deployment sites, not only synthetic rooms. Getting multi-sensor data off devices in a format that reconstruction and simulation can trust is still messy: clocks drift, intrinsics go missing, and mobile vs robot rigs diverge. This project ships the capture stack — SDKs, recording formats, calibration, and sync — so the rest of Open Real2Sim can start from honest data.
 
 ## Install
 
 ```bash
-cd /workspace/open-real2sim-capture
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -e ".[dev]"
+git clone https://github.com/youseftrk/open-real2sim-capture.git
+cd open-real2sim-capture
+pip install -e .
 ```
 
-## CLI
+
+## Quickstart
 
 ```bash
-or2s write-synthetic OUT_DIR
-# Optional: --duration SECONDS --fps HZ (defaults: 30 s at 20 Hz)
-or2s validate SESSION_DIR
-or2s import-rosbag BAG -o OUT_DIR   # stub → NotImplementedError
+pip install -e .    # local tree from the clone
+or2s write-synthetic ./session
+or2s validate ./session
 ```
 
-Demo sessions in this checkout:
+Validated demo session on box: `/workspace/open-real2sim-capture/_demo_session` (foxglove JPEG + CameraCalibration + PoseInFrame). Bag schema: [`docs/CAPTURE_BAG_v0.md`](docs/CAPTURE_BAG_v0.md) / [`docs/schemas.md`](docs/schemas.md).
 
-- `_demo_session/` is the short plumbing demo (the original ~0.9 s / 10-frame session).
-- `_demo_session_30s/` is the reconstruction demo: a 30 s, 20 Hz JPEG + pose
-  walkaround loop with overlapping views. Generate another session with
-  `or2s write-synthetic OUT_DIR --duration 30 --fps 20`.
+Coverage for real 3DGS (protocol, not schema): ~30–60s walkaround, ≥15–20 Hz, overlapping loops.
 
-## Layout
+
+## How it fits Open Real2Sim
 
 ```
-session_<uuid>/                 # or any OUT_DIR from write-synthetic
-  manifest.json                 # required
-  session.mcap                  # required — primary stream store
-  calibration/
-    sensors.json                # RGB intrinsics / extrinsics
-  provenance/
-    device.json                 # hardware / OS / app
-  checksums.sha256              # SHA-256 sidecar (recommended)
+open-real2sim-capture → open-real2sim-reconstruct → open-physical-sim
+                                              ↕
+                                        open-env-commons
 ```
 
-## MCAP encoding (chosen for v0)
+- **Outputs:** versioned recording packages (schemas in [`docs/schemas.md`](docs/schemas.md)).
+- **Consumers:** reconstruction tooling and `open-physical-sim` import paths; Env Commons for optional publish.
 
-| Topic | Schema | Notes |
-|-------|--------|-------|
-| `/or2s/rgb/image` | `foxglove.CompressedImage` | JPEG bytes in `data`, `format=jpeg` |
-| `/or2s/rgb/camera_info` | `foxglove.CameraCalibration` | K, D, R, P, width, height |
-| `/or2s/pose` | `foxglove.PoseInFrame` | position + orientation (xyzw) in `frame_id=device` |
+## Docs
 
-- Serialization: **Protobuf** via `mcap-protobuf-support` + `foxglove-schemas-protobuf`
-- Timestamps: **unix nanoseconds** (`log_time` = `publish_time`)
-- No ROS install required for the synthetic path
-- ROS2 CDR is reserved for `import_rosbag2` (stub only in v0)
-
-Manifest also records this under `mcap_encoding`.
-
-## Python API
-
-```python
-from pathlib import Path
-from or2s_capture import write_synthetic_session, read_session, validate
-
-out = write_synthetic_session(Path("/tmp/or2s_demo"))  # 30 s at 20 Hz by default
-report = validate(out)
-assert report.ok
-
-session = read_session(out)
-print(session.list_streams())
-for frame in session.iter_rgb():
-    print(frame.log_time_ns, frame.encoding, len(frame.data))
-for pose in session.iter_poses():
-    print(pose.position_m, pose.orientation_xyzw)
-```
-
-## How Reconstruct Eng ingests
-
-Minimum viable session:
-
-1. `manifest.json` + `session.mcap` with `/or2s/rgb/image` and `/or2s/rgb/camera_info`
-2. `calibration/sensors.json` with RGB pinhole intrinsics (`fx/fy/cx/cy`)
-3. Preferred: `/or2s/pose` trajectory (included in synthetic writer)
-
-Coordinate convention: camera optical **RDF** (x right, y down, z forward). Quaternions **xyzw**.
-`T_parent_sensor` is parent ← sensor.
-
-Capture emits observations + calib only — mesh / Isaac / MuJoCo export is Reconstruct Eng / Sim Runtime.
-
-## Tests
-
-```bash
-pytest
-```
+| Doc | Purpose |
+|-----|---------|
+| [`docs/architecture.md`](docs/architecture.md) | Components, sync model, device roles |
+| [`docs/schemas.md`](docs/schemas.md) | Recording layout, calibration, timestamps |
+| [`docs/contributing.md`](docs/contributing.md) | PR bar, license checklist |
 
 ## License
 
-Apache-2.0 — see [`LICENSE`](LICENSE).
+Code: [Apache-2.0](LICENSE).  
+Sample datasets (if any): see [`docs/data-license.md`](docs/data-license.md) — default **CC-BY-4.0**, **CC0** allowed.
+
+## Contributing
+
+Read [`docs/contributing.md`](docs/contributing.md) before opening a PR. Contributions are under Apache-2.0 for code. Marketplace incentive programs are out of scope for v0.
+
+## Security
+
+See [`SECURITY.md`](SECURITY.md).

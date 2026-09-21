@@ -3,7 +3,7 @@
 **Project:** `open-real2sim-capture`  
 **License:** Apache-2.0  
 **Status:** draft — aligned to CTO milestone (2026-09-21)  
-**Clean-room:** public InvLambda claims/demo only  
+**Clean-room:** public Real2Sim product demos only  
 
 **Consumers:** Reconstruct Eng (ingest), Sim Runtime, Env Commons (manifest later)
 
@@ -49,14 +49,6 @@ All frame data lives in MCAP topics. Sidecar JSON is for discovery + non-stream 
   "purpose": "scene" | "object" | "demo_episode" | "calibration_only",
   "duration_s": 0.0,
   "mcap": "session.mcap",
-  "mcap_encoding": {
-    "format": "protobuf",
-    "schemas": {
-      "/or2s/rgb/image": "foxglove.CompressedImage",
-      "/or2s/rgb/camera_info": "foxglove.CameraCalibration",
-      "/or2s/pose": "foxglove.PoseInFrame"
-    }
-  },
   "streams": [
     {
       "name": "rgb",
@@ -225,7 +217,7 @@ CLI: `or2s validate`, `or2s write-synthetic`, `or2s import-rosbag` (stub).
 ---
 
 ## Demo evidence (public, 2026-09-21)
-Public InvLambda demo video (Unitree humanoid + phone/tablet parity):
+Public Real2Sim-style demo video (Unitree-class humanoid + phone/tablet parity):
 - Modalities shown: RGB, depth, point cloud, wireframe/mesh
 - Robot-mounted and handheld device presented as equivalent capture paths
 - No on-screen file format, sync markers, UI, or calibration procedure

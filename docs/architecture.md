@@ -1,6 +1,8 @@
-> **Status:** draft — do not publish until the GitHub org (`youseftrk`) is confirmed.
+> **Status:** public early draft — live under [`youseftrk`](https://github.com/youseftrk).
 
 # Architecture — open-real2sim-capture
+
+This is for recording a real room from a phone or robot so we can rebuild it in 3D later.
 
 Capture owns the **observation + calibration** half of Open Real2Sim. It records multi-sensor sessions from phones, tablets, and robots into a versioned bag that reconstruction and simulation can ingest without inventing alternate layouts.
 
