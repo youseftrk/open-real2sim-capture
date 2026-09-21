@@ -1,0 +1,47 @@
+{
+  "schema": "open-real2sim.capture.manifest/0.1",
+  "session_id": "635d2927-ec65-485d-ace4-620d46e64d60",
+  "created_at": "2026-09-21T17:52:28.999532Z",
+  "capture_mode": "android",
+  "purpose": "scene",
+  "duration_s": 30.0,
+  "mcap": "session.mcap",
+  "streams": [
+    {
+      "name": "rgb",
+      "type": "rgb",
+      "required": true,
+      "topic": "/or2s/rgb/image",
+      "info_topic": "/or2s/rgb/camera_info",
+      "frame_id": "camera_rgb",
+      "rate_hz": 20.0,
+      "encoding": "jpeg"
+    },
+    {
+      "name": "pose",
+      "type": "pose",
+      "required": false,
+      "topic": "/or2s/pose",
+      "frame_id": "device",
+      "child_frame_id": "camera_rgb"
+    }
+  ],
+  "calibration_ref": "calibration/sensors.json",
+  "provenance_ref": "provenance/device.json",
+  "time_domain": "unix_ns",
+  "coordinate_convention": "RDF_optical",
+  "license": "Apache-2.0",
+  "attribution": {
+    "contributor": "or2s-capture",
+    "site": "synthetic",
+    "notes": "foxglove protobuf MCAP"
+  },
+  "mcap_encoding": {
+    "format": "protobuf",
+    "schemas": {
+      "/or2s/rgb/image": "foxglove.CompressedImage",
+      "/or2s/rgb/camera_info": "foxglove.CameraCalibration",
+      "/or2s/pose": "foxglove.PoseInFrame"
+    }
+  }
+}

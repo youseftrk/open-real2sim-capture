@@ -1,0 +1,42 @@
+{
+  "schema": "open-real2sim.capture.calibration/0.1",
+  "sensors": [
+    {
+      "frame_id": "camera_rgb",
+      "type": "camera",
+      "model": "pinhole_radtan",
+      "width": 320,
+      "height": 240,
+      "intrinsics": {
+        "fx": 280.0,
+        "fy": 280.0,
+        "cx": 160.0,
+        "cy": 120.0
+      },
+      "distortion": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "parent_frame": "device",
+      "T_parent_sensor": {
+        "rotation_xyzw": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "translation_m": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    }
+  ],
+  "rig_id": "android_default",
+  "calibration_date": "2026-09-21T17:52:28.894072Z",
+  "method": "manual"
+}
